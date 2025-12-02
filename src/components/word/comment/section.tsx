@@ -227,12 +227,15 @@ export default function WordCommentSection({
     }
   };
 
-  const canEditComment = (comment: WordComment) =>
-    editorMode &&
-    isLexicographer &&
-    typeof currentId === 'number' &&
-    typeof comment.user?.id === 'number' &&
-    comment.user.id === currentId;
+  const canEditComment = (comment: WordComment) => {
+    if (!editorMode) return false;
+    const ownsComment =
+      typeof currentId === 'number' &&
+      typeof comment.user?.id === 'number' &&
+      comment.user.id === currentId;
+    if (!ownsComment) return false;
+    return isLexicographer || isAdmin;
+  };
 
   const canDeleteComment = (comment: WordComment) => {
     if (!editorMode) return false;
@@ -402,7 +405,7 @@ export default function WordCommentSection({
                     value={editingValue}
                     onChange={(event) => setEditingValue(event.target.value)}
                     rows={4}
-                    className="w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-700 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                    className="w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-700 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 focus:outline-none"
                     placeholder="Edita tu comentario…"
                   />
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -427,7 +430,9 @@ export default function WordCommentSection({
                 </div>
               ) : undefined;
 
-              return <Globe key={c.id} comment={c} actions={renderActions} content={editingContent} />;
+              return (
+                <Globe key={c.id} comment={c} actions={renderActions} content={editingContent} />
+              );
             })}
           </div>
         )}

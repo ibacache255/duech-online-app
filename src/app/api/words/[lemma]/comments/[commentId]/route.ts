@@ -55,10 +55,12 @@ export async function PATCH(
     }
 
     const requesterId = user.id ? Number.parseInt(user.id, 10) : null;
-    const isLexicographer = user.role === 'lexicographer';
+    const role = user.role ?? '';
     const isOwner = requesterId !== null && note.userId === requesterId;
+    const canEdit =
+      isOwner && (role === 'lexicographer' || role === 'admin' || role === 'superadmin');
 
-    if (!isLexicographer || !isOwner) {
+    if (!canEdit) {
       return NextResponse.json(
         { error: 'Solo puedes editar tus propios comentarios.' },
         { status: 403 }
@@ -74,9 +76,7 @@ export async function PATCH(
           id: updated.id,
           note: updated.note,
           createdAt: updated.createdAt.toISOString(),
-          user: note.user
-            ? { id: note.user.id, username: note.user.username }
-            : null,
+          user: note.user ? { id: note.user.id, username: note.user.username } : null,
         },
       },
     });
