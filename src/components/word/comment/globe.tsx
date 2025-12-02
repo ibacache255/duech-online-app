@@ -279,7 +279,9 @@ export default function Globe({ comment, actions, content }: GlobeProps) {
             <span className="text-xs text-gray-500">{formattedDate}</span>
           </div>
         </div>
-        {actions ? <div className="flex items-center gap-2 text-xs text-gray-500">{actions}</div> : null}
+        {actions ? (
+          <div className="flex items-center gap-2 text-xs text-gray-500">{actions}</div>
+        ) : null}
       </header>
 
       {content ?? (
