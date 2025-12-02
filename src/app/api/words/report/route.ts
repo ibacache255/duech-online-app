@@ -4,14 +4,18 @@ import {
   mapWordsByStatusToPdf,
   WordStatusFilter,
 } from '@/lib/report-words-utils';
-import { requireAdminForApi } from '@/lib/api-auth';
 import { generatePDFreport } from '@/lib/pdf-utils';
+import { requireAdminForApi } from '@/lib/api-auth';
 
 export async function GET(request: NextRequest) {
-  // Require admin or superadmin to generate reports
-  await requireAdminForApi();
-
   try {
+    // Get user session
+    const user = await requireAdminForApi();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const searchParams = request.nextUrl.searchParams;
     const type = (searchParams.get('type') || 'redacted') as WordStatusFilter;
 
