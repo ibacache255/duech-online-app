@@ -93,7 +93,7 @@ export function ExportedWordsClient({
     setErrorMessage(null);
 
     try {
-      const response = await fetch(`/api/words/redacted/send-email?type=${type}`, {
+      const response = await fetch(`/api/words/export/send-email?type=${type}`, {
         method: 'POST',
       });
 
